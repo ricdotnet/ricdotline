@@ -29,29 +29,6 @@ C.gruvbox = {
   inactive = { bg = "#3c3836", fg = "#a89984" },
 }
 
--- TODO: add onedark colors
-C.onedark = {
-  a = { fg = "", bg = "" },
-  b = { fg = "", bg = "" },
-  c = { fg = "", bg = "" },
-  d = { fg = "", bg = "" },
-  e = { fg = "", bg = "" },
-  f = { fg = "", bg = "" },
-  g = { fg = "", bg = "" },
-  h = { fg = "", bg = "" },
-  i = { fg = "", bg = "" },
-  -- extras
-  reset = { bg = "" },
-  sep = {
-    a = { bg = "", fg = "" }, -- left dark
-    b = { bg = "", fg = "" }, -- left light
-    c = { bg = "", fg = "" }, -- thin
-    d = { bg = "", fg = "" }, -- right light
-    e = { bg = "", fg = "" }, -- right dark
-  },
-  inactive = { bg = "", fg = "" }
-}
-
 C.material = {
   a = { fg = "#0f111a", bg = "#c3e88d" },
   b = { fg = "#090b10", bg = "#717cb4" },
