@@ -246,8 +246,6 @@ function Sl.setup(opts)
     if (Config[part] == nil) then return default_fn() end
     if (type(Config[part]) == "string") then return Config[part] end
 
-    print(type(Config[part]()))
-
     local part_result = ""
     if (type(Config[part]) == "function") then part_result = Config[part]() end
 
