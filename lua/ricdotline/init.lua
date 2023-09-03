@@ -1,17 +1,21 @@
+local set = vim.opt
+local api = vim.api
+local fn = vim.fn
+local cmd = api.nvim_command
+local utils = require("ricdotline.utils")
+
 local Sl = {}
+local Config = {}
 
-Sl.setup = function(opts)
-  local set = vim.opt
-  local api = vim.api
-  local fn = vim.fn
-  local cmd = api.nvim_command
-
+function Sl.setup(opts)
   local ok, job = pcall(require, "plenary.job")
   if not ok then
     return print("You need plenary installed to use ricdotline")
   end
 
-  local utils = require("ricdotline.utils")
+  if (opts ~= nil) then
+    Config = opts
+  end
 
   local chars = {
     blank = " ",
@@ -39,9 +43,9 @@ Sl.setup = function(opts)
   local function getIcon(filename, filetype)
     local icon = ""
 
-    local ok, devicons = pcall(require, "nvim-web-devicons")
+    local devicons_ok, devicons = pcall(require, "nvim-web-devicons")
 
-    if not ok then
+    if not devicons_ok then
       return icon
     end
 
@@ -146,7 +150,7 @@ Sl.setup = function(opts)
   end
 
   local getWakaTimeStats = function() return "" end
-  if opts.wakatime == true then
+  if Config.wakatime == true then
     -- TODO: refactor using timers from luv
     local startTime = os.time()
     local wakatime = ""
@@ -204,12 +208,12 @@ Sl.setup = function(opts)
   end
 
   -- LINE BUILDER --
-  local separator = opts.separator or "arrow"
-  local colorScheme = opts.theme or vim.g.colors_name
+  local separator = Config.separator or "arrow"
+  local colorScheme = Config.theme or vim.g.colors_name
   local colors = require("ricdotline.colors")[colorScheme]
 
-  if opts.colors then
-    for k, v in pairs(opts.colors) do
+  if Config.colors then
+    for k, v in pairs(Config.colors) do
       colors[k] = v
     end
   end
@@ -238,31 +242,48 @@ Sl.setup = function(opts)
   cmd("hi PartI guibg=" .. colors["i"]["bg"] .. " guifg=" .. colors["i"]["fg"])
   cmd("hi Inactive guibg=" .. colors["inactive"]["bg"] .. " guifg=" .. colors["inactive"]["fg"])
 
+  local function line_part(part, default_fn)
+    if (Config[part] == nil) then return default_fn() end
+    if (type(Config[part]) == "string") then return Config[part] end
+
+    print(type(Config[part]()))
+
+    local part_result = ""
+    if (type(Config[part]) == "function") then part_result = Config[part]() end
+
+    if (type(part_result) ~= "string") then
+      print(part .. " needs to be of type string or a function that return a string")
+      return ""
+    end
+
+    return part_result
+  end
+
   function Active()
     set.laststatus = 2
 
     local statusline = {
-      "%#PartA#" .. chars["blank"] .. getMode() .. chars["blank"],
+      "%#PartA#" .. chars["blank"] .. line_part("partA", getMode) .. chars["blank"],
       "%#SepA#" .. chars[separator]["right"],
-      "%#PartB#" .. chars["blank"] .. getFile() .. chars["blank"],
+      "%#PartB#" .. chars["blank"] .. line_part("partB", getFile) .. chars["blank"],
       "%#SepB#" .. chars[separator]["right"],
-      "%#PartC#" .. chars["blank"] .. getGitBranch() .. chars["blank"],
+      "%#PartC#" .. chars["blank"] .. line_part("partC", getGitBranch) .. chars["blank"],
       "%#SepC#" .. chars["thin"]["right"],
-      "%#PartD#" .. chars["blank"] .. getGitStats(),
+      "%#PartD#" .. chars["blank"] .. line_part("partD", getGitStats),
       "%#SepC#" .. chars["thin"]["right"],
-      "%#PartE#" .. chars["blank"] .. getIsUnsaved(),
+      "%#PartE#" .. chars["blank"] .. line_part("partE", getIsUnsaved),
       -- right side
       "%=",
 
       getWakaTimeStats(),
       "%#SepC#" .. chars["thin"]["left"],
-      "%#PartF#" .. chars["blank"] .. getBufDiagnostics(),
+      "%#PartF#" .. chars["blank"] .. line_part("partF", getBufDiagnostics),
       "%#SepC#" .. chars["thin"]["left"],
-      "%#PartG#" .. chars["blank"] .. getCurrentLsp() .. chars["blank"],
+      "%#PartG#" .. chars["blank"] .. line_part("partG", getCurrentLsp) .. chars["blank"],
       "%#SepD#" .. chars[separator]["left"],
-      "%#PartH#" .. chars["blank"] .. getProjectDir() .. chars["blank"],
+      "%#PartH#" .. chars["blank"] .. line_part("partH", getProjectDir) .. chars["blank"],
       "%#SepE#" .. chars[separator]["left"],
-      "%#PartI#" .. chars["blank"] .. getLineAndCol() .. chars["blank"],
+      "%#PartI#" .. chars["blank"] .. line_part("partI", getLineAndCol) .. chars["blank"],
     }
 
     return table.concat(statusline)
@@ -287,12 +308,12 @@ Sl.setup = function(opts)
   end
 
   vim.api.nvim_exec([[
-  augroup Statusline
-    autocmd!
-    autocmd VimEnter,WinEnter,BufEnter * setlocal statusline=%!v:lua.Active()
-    autocmd WinLeave,BufLeave * setlocal statusline=%{%v:lua.Inactive()%}
-  augroup END
-]], false)
+    augroup Statusline
+      autocmd!
+      autocmd VimEnter,WinEnter,BufEnter * setlocal statusline=%!v:lua.Active()
+      autocmd WinLeave,BufLeave * setlocal statusline=%{%v:lua.Inactive()%}
+    augroup END
+  ]], false)
 end
 
 return Sl

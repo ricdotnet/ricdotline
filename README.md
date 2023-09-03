@@ -26,10 +26,22 @@ require("ricdotline").setup {}
 
 ##### extra setup
 ```lua
+function partC()
+  return "hello world"
+end
+
 {
   wakatime = true, -- requires wakatime plugin installed
   theme = "gruvbox", -- gruvbox or material
   separator = "arrow", -- arrow or round
   colors = {}, -- to be updated
+  partA = "hello world",
+  partB = function()
+    return "hello world"
+  end,
+  partC = partC,
 }
 ```
+
+We can also pass a function or a string for each part of the statusline. This can be used to override the default value
+and allows for more customization. Note that passing a function it must return a string.
