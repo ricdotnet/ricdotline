@@ -1,4 +1,4 @@
-local set = vim.opt
+local set = vim.optini
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
@@ -119,6 +119,10 @@ function Sl.setup(opts)
   end
 
   local function getCurrentLsp()
+    if (utils.getPaneWidth() < 120) then
+      return ""
+    end
+
     local lsps = vim.lsp.get_active_clients()
     local lsp = ""
 
@@ -187,6 +191,10 @@ function Sl.setup(opts)
   local function getBufDiagnostics()
     if api.nvim_buf_get_name(0) == "" or api.nvim_buf_get_name(0) == nil then return "" end
 
+    if (utils.getPaneWidth() < 120) then
+      return ""
+    end
+
     local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
     local warns = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
     local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
@@ -197,7 +205,13 @@ function Sl.setup(opts)
     hints = (hints and hints > 0) and ("%#LspH#" .. chars["diagnostics"]["hint"] .. hints .. chars["blank"]) or ""
     info = (info and info > 0) and ("%#LspI#" .. chars["diagnostics"]["info"] .. info .. chars["blank"]) or ""
 
-    return chars["blank"] .. errors .. warns .. hints .. info .. chars["blank"]
+    local diagnostics = errors .. warns .. hints .. info
+
+    if (diagnostics ~= "") then
+      return chars["blank"] .. diagnostics .. chars["blank"]
+    else
+      return ""
+    end
   end
 
   local function getIsUnsaved()
@@ -270,6 +284,7 @@ function Sl.setup(opts)
       "%#PartD#" .. chars["blank"] .. line_part("partD", getGitStats),
       "%#SepC#" .. chars["thin"]["right"],
       "%#PartE#" .. chars["blank"] .. line_part("partE", getIsUnsaved),
+
       -- right side
       "%=",
 
