@@ -1,4 +1,4 @@
-local set = vim.optini
+local set = vim.opt
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
