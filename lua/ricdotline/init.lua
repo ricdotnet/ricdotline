@@ -22,6 +22,7 @@ function Sl.setup(opts)
     arrow = { left = "", right = "" },
     round = { left = "", right = "" },
     thin = { left = "", right = "" },
+    tilt = { left = "", right = "" },
     upstream = "  ",
     directory = "  ",
     watch = " ",
