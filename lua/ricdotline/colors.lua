@@ -58,4 +58,33 @@ C.material = {
   inactive = { bg = "#171a1f", fg = "#464b5b" }
 }
 
+C.catppuccin_mocha = {
+  a = { fg = "#1E1E2E", bg = "#A6D189" },
+  b = { fg = "#090b10", bg = "#8CAAEE" },
+  c = { fg = "#C6D0F5", bg = "#1E1E2E" },
+  d = { fg = "#C6D0F5", bg = "#1E1E2E" },
+  e = { fg = "#C6D0F5", bg = "#1E1E2E" },
+  f = { fg = "#C6D0F5", bg = "#1E1E2E" },
+  g = { fg = "#C6D0F5", bg = "#1E1E2E" },
+  h = { fg = "#090b10", bg = "#8CAAEE" },
+  i = { fg = "#1E1E2E", bg = "#C6D0F5" },
+  -- extras
+  reset = { bg = "#1E1E2E" },
+  sep = {
+    a = { bg = "#8CAAEE", fg = "#A6D189" }, -- left dark
+    b = { bg = "#1E1E2E", fg = "#8CAAEE" }, -- left light
+    c = { bg = "#1E1E2E", fg = "#181A1f" }, -- thin
+    d = { bg = "#1E1E2E", fg = "#8CAAEE" }, -- right light
+    e = { bg = "#8CAAEE", fg = "#C6D0F5" }, -- right dark
+  },
+  diagnostic = {
+    bg = "#1E1E2E",
+    error = "#ff5370",
+    warn = "#ffcb6b",
+    hint = "#c792ea",
+    info = "#89ddff",
+  },
+  inactive = { bg = "#171a1f", fg = "#464b5b" }
+}
+
 return C
