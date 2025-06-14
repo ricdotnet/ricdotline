@@ -124,7 +124,7 @@ function Sl.setup(opts)
       return ""
     end
 
-    local lsps = vim.lsp.get_active_clients()
+    local lsps = vim.lsp.get_clients()
     local lsp = ""
 
     if not lsps or lsps == nil then
